@@ -1,0 +1,32 @@
+import java.util.*;
+
+class Solution {
+    public static ArrayList<ArrayList<Integer>> permuteDist(int[] arr) {
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        backtrack(arr, 0, result);
+        return result;
+    }
+    
+    private static void backtrack(int[] arr, int start, ArrayList<ArrayList<Integer>> result) {
+        if (start == arr.length) {
+            ArrayList<Integer> current = new ArrayList<>();
+            for (int num : arr) {
+                current.add(num);
+            }
+            result.add(current);
+            return;
+        }
+        
+        for (int i = start; i < arr.length; i++) {
+            swap(arr, start, i);
+            backtrack(arr, start + 1, result);
+            swap(arr, start, i);
+        }
+    }
+    
+    private static void swap(int[] arr, int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+}
