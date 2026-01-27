@@ -1,0 +1,46 @@
+class Solution {
+    
+    private static final int[][] DIRECTIONS = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+    private int n, m;
+    
+    public boolean isWordExist(char[][] mat, String word) {
+        n = mat.length;
+        m = mat[0].length;
+        
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (mat[i][j] == word.charAt(0)) {
+                    if (dfs(mat, word, i, j, 0)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    
+    private boolean dfs(char[][] mat, String word, int i, int j, int idx) {
+        if (idx == word.length()) {
+            return true;
+        }
+        
+        if (i < 0 || i >= n || j < 0 || j >= m || mat[i][j] != word.charAt(idx)) {
+            return false;
+        }
+        
+        char temp = mat[i][j];
+        mat[i][j] = '#';
+        
+        for (int[] dir : DIRECTIONS) {
+            int ni = i + dir[0];
+            int nj = j + dir[1];
+            if (dfs(mat, word, ni, nj, idx + 1)) {
+                mat[i][j] = temp;
+                return true;
+            }
+        }
+        
+        mat[i][j] = temp;
+        return false;
+    }
+}
