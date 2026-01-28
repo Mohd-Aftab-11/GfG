@@ -1,0 +1,58 @@
+import java.util.*;
+
+class Solution {
+    public int countSubset(int[] arr, int k) {
+        int n = arr.length;
+        int mid = n / 2;
+        
+        int[] left = new int[mid];
+        int[] right = new int[n - mid];
+        for (int i = 0; i < mid; i++) left[i] = arr[i];
+        for (int i = mid; i < n; i++) right[i - mid] = arr[i];
+        
+        Map<Long, Integer> leftMap = new HashMap<>();
+        int leftSize = 1 << left.length;
+        for (int mask = 0; mask < leftSize; mask++) {
+            long sum = 0;
+            for (int i = 0; i < left.length; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    sum += left[i];
+                }
+            }
+            leftMap.put(sum, leftMap.getOrDefault(sum, 0) + 1);
+        }
+        
+        Map<Long, Integer> rightMap = new HashMap<>();
+        int rightSize = 1 << right.length;
+        for (int mask = 0; mask < rightSize; mask++) {
+            long sum = 0;
+            for (int i = 0; i < right.length; i++) {
+                if ((mask & (1 << i)) != 0) {
+                    sum += right[i];
+                }
+            }
+            rightMap.put(sum, rightMap.getOrDefault(sum, 0) + 1);
+        }
+        
+        int count = 0;
+        for (Map.Entry<Long, Integer> entry : leftMap.entrySet()) {
+            long leftSum = entry.getKey();
+            int leftCount = entry.getValue();
+            long target = k - leftSum;
+            
+            if (rightMap.containsKey(target)) {
+                count += leftCount * rightMap.get(target);
+            }
+        }
+        
+        return count;
+    }
+    
+    public static void main(String[] args) {
+        Solution solution = new Solution();
+
+        System.out.println(solution.countSubset(new int[]{1, 3, 2}, 3));
+        System.out.println(solution.countSubset(new int[]{4, 2, 3, 1, 2}, 4));
+        System.out.println(solution.countSubset(new int[]{10, 20, 30}, 25));
+    }
+}
