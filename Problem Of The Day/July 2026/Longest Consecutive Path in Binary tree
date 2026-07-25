@@ -1,0 +1,31 @@
+class Solution {
+    private int maxLength = 0;
+    
+    public int longestConsecutive(Node root) {
+        if (root == null) return -1;
+        
+        dfs(root, 1);
+        return maxLength > 1 ? maxLength : -1;
+    }
+    
+    private void dfs(Node node, int currentLength) {
+        if (node == null) return;
+        maxLength = Math.max(maxLength, currentLength);
+        
+        if (node.left != null) {
+            if (node.left.data == node.data + 1) {
+                dfs(node.left, currentLength + 1);
+            } else {
+                dfs(node.left, 1);
+            }
+        }
+        
+        if (node.right != null) {
+            if (node.right.data == node.data + 1) {
+                dfs(node.right, currentLength + 1);
+            } else {
+                dfs(node.right, 1);
+            }
+        }
+    }
+}
