@@ -1,0 +1,25 @@
+class Solution {
+    public ArrayList<ArrayList<Integer>> levelSort(int[] arr) {
+        ArrayList<ArrayList<Integer>> result = new ArrayList<>();
+        
+        int n = arr.length;
+        int index = 0;
+        int levelSize = 1;
+        
+        while (index < n) {
+            ArrayList<Integer> currentLevel = new ArrayList<>();
+            
+            int nodesInThisLevel = Math.min(levelSize, n - index);
+            
+            for (int i = 0; i < nodesInThisLevel; i++) {
+                currentLevel.add(arr[index + i]);
+            }
+            Collections.sort(currentLevel);
+            result.add(currentLevel);
+            
+            index += nodesInThisLevel;
+            levelSize *= 2;
+        }
+        return result;
+    }
+}
