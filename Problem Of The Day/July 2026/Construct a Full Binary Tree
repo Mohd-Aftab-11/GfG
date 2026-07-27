@@ -1,0 +1,32 @@
+class Solution {
+    public Node constructBinaryTree(int[] pre, int[] preMirror) {
+        int n = pre.length;
+        return construct(pre, preMirror, 0, 0, n);
+    }
+    
+    private Node construct(int[] pre, int[] preMirror, int preStart, int preMirrorStart, int size) {
+        if (size <= 0) return null;
+        
+        Node root = new Node(pre[preStart]);
+        
+        if (size == 1) return root;
+        
+        int leftChild = pre[preStart + 1];
+        int rightChild = preMirror[preMirrorStart + 1];
+        
+        int rightChildPosInPre = -1;
+        for (int i = preStart + 1; i < preStart + size; i++) {
+            if (pre[i] == rightChild) {
+                rightChildPosInPre = i;
+                break;
+            }
+        }
+        int leftSize = rightChildPosInPre - preStart - 1;
+        int rightSize = size - leftSize - 1;
+        
+        root.left = construct(pre, preMirror, preStart + 1, preMirrorStart + 1 + rightSize, leftSize);
+        root.right = construct(pre, preMirror, rightChildPosInPre, preMirrorStart + 1, rightSize);
+        
+        return root;
+    }
+}
