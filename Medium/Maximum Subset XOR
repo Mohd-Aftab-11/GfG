@@ -1,0 +1,25 @@
+class Solution {
+    public int maxSubsetXOR(int[] arr) {
+        int[] basis = new int[31];
+        
+        for (int num : arr) {
+            int x = num;
+            for (int bit = 30; bit >= 0; bit--) {
+                if ((x & (1 << bit)) == 0) continue;
+                
+                if (basis[bit] == 0) {
+                    basis[bit] = x;
+                    break;
+                }
+                x ^= basis[bit];
+            }
+        }
+        int maxXor = 0;
+        for (int bit = 30; bit >= 0; bit--) {
+            if ((maxXor ^ basis[bit]) > maxXor) {
+                maxXor ^= basis[bit];
+            }
+        }
+        return maxXor;
+    }
+}
