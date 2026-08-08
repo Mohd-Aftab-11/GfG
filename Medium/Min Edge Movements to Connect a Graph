@@ -1,0 +1,65 @@
+class Solution {
+    int minEdgesReq(int n, int[][] edges) {
+        int[] parent = new int[n];
+        int[] rank = new int[n];
+        
+        for (int i = 0; i < n; i++) {
+            parent[i] = i;
+            rank[i] = 0;
+        }
+        
+        java.util.function.IntUnaryOperator find = new java.util.function.IntUnaryOperator() {
+            @Override
+            public int applyAsInt(int x) {
+                if (parent[x] != x) {
+                    parent[x] = applyAsInt(parent[x]);
+                }
+                return parent[x];
+            }
+        };
+        
+        java.util.function.BiConsumer<Integer, Integer> union = (a, b) -> {
+            int rootA = find.applyAsInt(a);
+            int rootB = find.applyAsInt(b);
+            
+            if (rootA != rootB) {
+                if (rank[rootA] < rank[rootB]) {
+                    parent[rootA] = rootB;
+                } else if (rank[rootA] > rank[rootB]) {
+                    parent[rootB] = rootA;
+                } else {
+                    parent[rootB] = rootA;
+                    rank[rootA]++;
+                }
+            }
+        };
+        
+        int redundantEdges = 0;
+        
+        for (int[] edge : edges) {
+            int u = edge[0];
+            int v = edge[1];
+            
+            int rootU = find.applyAsInt(u);
+            int rootV = find.applyAsInt(v);
+            
+            if (rootU == rootV) {
+                redundantEdges++;
+            } else {
+                union.accept(u, v);
+            }
+        }
+        
+        int components = 0;
+        for (int i = 0; i < n; i++) {
+            if (find.applyAsInt(i) == i) {
+                components++;
+            }
+        }
+        if (redundantEdges >= components - 1) {
+            return components - 1;
+        } else {
+            return -1;
+        }
+    }
+}
