@@ -1,0 +1,55 @@
+class Solution {
+    ArrayList<Integer> largestSquare(int[][] mat, int[][] queries, int k) {
+        int n = mat.length;
+        int m = mat[0].length;
+        
+        int[][] prefix = new int[n + 1][m + 1];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                prefix[i + 1][j + 1] = mat[i][j] + prefix[i][j + 1] + prefix[i + 1][j] - prefix[i][j];
+            }
+        }
+        ArrayList<Integer> result = new ArrayList<>();
+        
+        for (int[] query : queries) {
+            int centerX = query[0];
+            int centerY = query[1];
+            
+            int maxExpand = Math.min(
+                Math.min(centerX, n - 1 - centerX),
+                Math.min(centerY, m - 1 - centerY)
+            );
+            int left = 0, right = maxExpand;
+            int answer = -1;
+            
+            while (left <= right) {
+                int mid = left + (right - left) / 2;
+                int halfSize = mid;
+                int sideLength = 2 * halfSize + 1;
+                
+                int ones = getOnes(prefix, centerX - halfSize, centerY - halfSize, centerX + halfSize, centerY + halfSize);
+                
+                if (ones <= k) {
+                    answer = sideLength;
+                    left = mid + 1;
+                } else {
+                    right = mid - 1;
+                }
+            }
+            int onesIn1x1 = mat[centerX][centerY];
+            if (answer == -1) {
+                if (onesIn1x1 > k) {
+                    result.add(-1);
+                } else {
+                    result.add(1);
+                }
+            } else {
+                result.add(answer);
+            }
+        }
+        return result;
+    }
+    private int getOnes(int[][] prefix, int r1, int c1, int r2, int c2) {
+        return prefix[r2 + 1][c2 + 1] - prefix[r1][c2 + 1] - prefix[r2 + 1][c1] + prefix[r1][c1];
+    }
+}
