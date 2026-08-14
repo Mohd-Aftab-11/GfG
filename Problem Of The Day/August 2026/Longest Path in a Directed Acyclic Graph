@@ -1,0 +1,59 @@
+class Solution {
+    public int[] maxDistance(int V, int src, ArrayList<ArrayList<Integer>> edges) {
+        ArrayList<ArrayList<int[]>> adj = new ArrayList<>();
+        for (int i = 0; i < V; i++) {
+            adj.add(new ArrayList<>());
+        }
+        
+        int[] indegree = new int[V];
+        for (ArrayList<Integer> edge : edges) {
+            int u = edge.get(0);
+            int v = edge.get(1);
+            int w = edge.get(2);
+            adj.get(u).add(new int[]{v, w});
+            indegree[v]++;
+        }
+        int[] topo = new int[V];
+        int idx = 0;
+        Queue<Integer> queue = new LinkedList<>();
+        
+        for (int i = 0; i < V; i++) {
+            if (indegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
+        
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            topo[idx++] = u;
+            
+            for (int[] neighbor : adj.get(u)) {
+                int v = neighbor[0];
+                indegree[v]--;
+                if (indegree[v] == 0) {
+                    queue.offer(v);
+                }
+            }
+        }
+        int[] dist = new int[V];
+        Arrays.fill(dist, Integer.MIN_VALUE);
+        dist[src] = 0;
+        
+        for (int i = 0; i < V; i++) {
+            int u = topo[i];
+            if (dist[u] == Integer.MIN_VALUE) {
+                continue;
+            }
+            
+            for (int[] neighbor : adj.get(u)) {
+                int v = neighbor[0];
+                int w = neighbor[1];
+                
+                if (dist[u] + w > dist[v]) {
+                    dist[v] = dist[u] + w;
+                }
+            }
+        }
+        return dist;
+    }
+}
