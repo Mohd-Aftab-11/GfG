@@ -1,0 +1,38 @@
+class Solution {
+    public int countWithout(int n, int d) {
+        if (n < 0) return 0;
+        int countWithDigit = countNumbersWithDigit(n, d);
+        return n - countWithDigit;
+    }
+
+    private int countNumbersWithDigit(int n, int d) {
+        String s = Integer.toString(n);
+        int len = s.length();
+
+        Integer[][][][] dp = new Integer[len][2][2][2];
+        return dfs(s, 0, 1, 0, 0, d, dp);
+    }
+
+    private int dfs(String s, int pos, int tight, int started, int hasDigit, int d, Integer[][][][] dp) {
+        if (pos == s.length()) {
+            return (started == 1 && hasDigit == 1) ? 1 : 0;
+        }
+        if (dp[pos][tight][started][hasDigit] != null) {
+            return dp[pos][tight][started][hasDigit];
+        }
+        int limit = tight == 1 ? s.charAt(pos) - '0' : 9;
+        int count = 0;
+
+        for (int digit = 0; digit <= limit; digit++) {
+            int newTight = (tight == 1 && digit == limit) ? 1 : 0;
+            int newStarted = (started == 1 || digit != 0) ? 1 : 0;
+            int newHasDigit = hasDigit;
+
+            if (newStarted == 1 && digit == d) {
+                newHasDigit = 1;
+            }
+            count += dfs(s, pos + 1, newTight, newStarted, newHasDigit, d, dp);
+        }
+        return dp[pos][tight][started][hasDigit] = count;
+    }
+}
