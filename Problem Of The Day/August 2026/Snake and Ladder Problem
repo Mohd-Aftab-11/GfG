@@ -1,0 +1,51 @@
+class Solution {
+    public int minThrows(int n, int[] lad, int[] sn) {
+        int totalCells = n * n;
+
+        int[] board = new int[totalCells + 1];
+
+        for (int i = 0; i < lad.length; i += 2) {
+            board[lad[i]] = lad[i + 1];
+        }
+        for (int i = 0; i < sn.length; i += 2) {
+            board[sn[i]] = sn[i + 1];
+        }
+        boolean[] visited = new boolean[totalCells + 1];
+        Queue<Integer> queue = new LinkedList<>();
+
+        visited[1] = true;
+        queue.offer(1);
+
+        int throwsCount = 0;
+
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+
+            for (int i = 0; i < size; i++) {
+                int current = queue.poll();
+
+                if (current == totalCells) {
+                    return throwsCount;
+                }
+                for (int dice = 1; dice <= 6; dice++) {
+                    int next = current + dice;
+
+                    if (next > totalCells) {
+                        break;
+                    }
+
+                    if (board[next] != 0) {
+                        next = board[next];
+                    }
+
+                    if (!visited[next]) {
+                        visited[next] = true;
+                        queue.offer(next);
+                    }
+                }
+            }
+            throwsCount++;
+        }
+        return -1;
+    }
+}
