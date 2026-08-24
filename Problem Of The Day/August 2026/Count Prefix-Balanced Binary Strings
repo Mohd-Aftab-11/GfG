@@ -1,0 +1,19 @@
+class Solution {
+    public int prefixStrings(int n) {
+        int MOD = 1000000007;
+
+        if (n <= 1) return 1;
+
+        long[] catalan = new long[n + 1];
+        catalan[0] = 1;
+
+        for (int i = 1; i <= n; i++) {
+            long sum = 0;
+            for (int j = 0; j < i; j++) {
+                sum = (sum + catalan[j] * catalan[i - 1 - j]) % MOD;
+            }
+            catalan[i] = sum;
+        }
+        return (int)catalan[n];
+    }
+}
