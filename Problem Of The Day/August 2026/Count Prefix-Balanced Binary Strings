@@ -2,7 +2,7 @@ class Solution {
     public int prefixStrings(int n) {
         int MOD = 1000000007;
 
-        if (n <= 1) return 1;
+        if (n <= 1) return 1; 
 
         long[] catalan = new long[n + 1];
         catalan[0] = 1;
