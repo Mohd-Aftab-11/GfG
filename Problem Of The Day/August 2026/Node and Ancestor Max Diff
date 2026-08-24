@@ -1,0 +1,31 @@
+class Solution {
+    int maxDiff(Node root) {
+        if (root == null) {
+            return -1;
+        }
+
+        int[] maxDiff = new int[]{Integer.MIN_VALUE};
+        postOrder(root, maxDiff);
+        return maxDiff[0];
+    }
+
+    private int postOrder(Node node, int[] maxDiff) {
+        if (node == null) {
+            return Integer.MAX_VALUE;
+        }
+
+        int leftMin = postOrder(node.left, maxDiff);
+        int rightMin = postOrder(node.right, maxDiff);
+
+        int minInSubtree = Math.min(node.data, Math.min(leftMin, rightMin));
+
+        if (node.left != null) {
+            maxDiff[0] = Math.max(maxDiff[0], node.data - leftMin);
+        }
+        if (node.right != null) {
+            maxDiff[0] = Math.max(maxDiff[0], node.data - rightMin);
+        }
+
+        return minInSubtree;
+    }
+}
