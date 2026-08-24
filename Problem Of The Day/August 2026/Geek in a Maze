@@ -1,0 +1,64 @@
+import java.util.*;
+
+class Solution {
+    public int numberOfCells(int r, int c, int u, int d, char[][] mat) {
+        int n = mat.length;
+        int m = mat[0].length;
+
+        if (r < 0 || r >= n || c < 0 || c >= m || mat[r][c] == '#') return 0;
+
+        int[][] maxUpUsed = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(maxUpUsed[i], Integer.MAX_VALUE);
+        }
+
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[]{r, c, 0, 0});
+        maxUpUsed[r][c] = 0;
+
+        boolean[][] visited = new boolean[n][m];
+        int count = 0;
+        int[][] directions = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+
+        while (!queue.isEmpty()) {
+            int[] curr = queue.poll();
+            int row = curr[0];
+            int col = curr[1];
+            int upUsed = curr[2];
+            int downUsed = curr[3];
+
+            if (visited[row][col]) {
+                if (upUsed > maxUpUsed[row][col]) continue;
+            } else {
+                visited[row][col] = true;
+                count++;
+            }
+
+            for (int[] dir : directions) {
+                int newRow = row + dir[0];
+                int newCol = col + dir[1];
+
+                if (newRow < 0 || newRow >= n || newCol < 0 || newCol >= m) continue;
+                if (mat[newRow][newCol] == '#') continue;
+
+                int newUpUsed = upUsed;
+                int newDownUsed = downUsed;
+
+                if (dir[0] == -1) {
+                    newUpUsed = upUsed + 1;
+                    if (newUpUsed > u) continue;
+                }
+                else if (dir[0] == 1) {
+                    newDownUsed = downUsed + 1;
+                    if (newDownUsed > d) continue;
+                }
+
+                if (newUpUsed < maxUpUsed[newRow][newCol]) {
+                    maxUpUsed[newRow][newCol] = newUpUsed;
+                    queue.offer(new int[]{newRow, newCol, newUpUsed, newDownUsed});
+                }
+            }
+        }
+        return count;
+    }
+}
