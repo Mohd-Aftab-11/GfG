@@ -1,0 +1,28 @@
+class Solution {
+    public int solve(int n, String s) {
+        int occupied = 0;
+        int rejected = 0;
+        boolean[] usingComputer = new boolean[26];
+        boolean[] seen = new boolean[26];
+
+        for (char c : s.toCharArray()) {
+            int idx = c - 'A';
+
+            if (!seen[idx]) {
+                seen[idx] = true;
+                if (occupied < n) {
+                    usingComputer[idx] = true;
+                    occupied++;
+                } else {
+                    rejected++;
+                }
+            } else {
+                if (usingComputer[idx]) {
+                    usingComputer[idx] = false;
+                    occupied--;
+                }
+            }
+        }
+        return rejected;
+    }
+}
