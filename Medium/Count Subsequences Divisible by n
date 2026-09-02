@@ -1,0 +1,22 @@
+class Solution {
+    public int countSubsequences(String s, int n) {
+        final int MOD = 1_000_000_007;
+        int[] dp = new int[n];
+        dp[0] = 1;
+
+        for (char ch : s.toCharArray()) {
+            int d = ch - '0';
+            int[] newDp = dp.clone();
+
+            for (int r = 0; r < n; r++) {
+                if (dp[r] > 0) {
+                    int newRem = (r * 10 + d) % n;
+                    newDp[newRem] = (newDp[newRem] + dp[r]) % MOD;
+                }
+            }
+            dp = newDp;
+        }
+        int ans = (dp[0] - 1 + MOD) % MOD;
+        return ans;
+    }
+}
